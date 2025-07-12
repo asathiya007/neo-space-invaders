@@ -32,18 +32,19 @@ public class BackgroundImage : MonoBehaviour
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(
             genaiApiUrl + "/ai_generated_image?text="
             + $"{bgPrompt.Replace(" ", "%20")}");
+        request.SetRequestHeader("ngrok-skip-browser-warning", "");
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("Image loaded successfully");
+            Debug.Log("AI-generated image for background loaded successfully");
             backgroundImage.color = Color.white;
             Texture2D texture = DownloadHandlerTexture.GetContent(request);
             backgroundImage.texture = texture;
         }
         else
         {
-            Debug.LogError("Image load failed: " + request.error);
+            Debug.LogError("AI-generated image load failed: " + request.error);
         }
     }
 }

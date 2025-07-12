@@ -200,7 +200,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   missilePrefab: {fileID: 5483809503362779383, guid: a71d55e660f174c2ca709a715d233785, type: 3}
   missileAttackRate: 1
-  genaiApiUrl: https://b309831b8945.ngrok-free.app
+  genaiApiUrl: https://953908e585b0.ngrok-free.app
 --- !u!1 &626427973
 GameObject:
   m_ObjectHideFlags: 0
@@ -1424,7 +1424,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a03076c8526674e5fbbfd52a3c91e331, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  genaiApiUrl: https://b309831b8945.ngrok-free.app
+  genaiApiUrl: https://953908e585b0.ngrok-free.app
   backgroundImage: {fileID: 1994748741}
 --- !u!114 &1994748741
 MonoBehaviour:
