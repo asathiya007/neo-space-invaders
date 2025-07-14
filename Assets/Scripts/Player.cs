@@ -1,16 +1,13 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 
-public class Player : MonoBehaviour
-{
+public class Player : MonoBehaviour {
     public Projectile laserPrefab;
     public float speed = 5.0f;
     private bool laserActive;
 
     // moves player based on keyboard/mouse input
-    private void Update()
-    {
+    private void Update() {
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
             this.transform.position += 
                 Vector3.left * this.speed * Time.deltaTime;
@@ -27,8 +24,7 @@ public class Player : MonoBehaviour
     }
 
     // shoots laser (only one active laser at a time)
-    private void Shoot()
-    {
+    private void Shoot() {
         if (!laserActive) {
             Projectile projectile = Instantiate(
                 this.laserPrefab, this.transform.position,
@@ -39,17 +35,15 @@ public class Player : MonoBehaviour
     }
 
     // resets active status when laser is destroyed
-    private void LaserDestroyed()
-    {
+    private void LaserDestroyed() {
         laserActive = false;
     }
 
-    // reload scene when hit by invader or missile
-    private void OnTriggerEnter2D(Collider2D other)
-    {
+    // load game over scene when hit by invader or missile
+    private void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject.layer == LayerMask.NameToLayer("Invader") ||
             other.gameObject.layer == LayerMask.NameToLayer("Missile")) {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneLoader.LoadGameOverScene();
         }
     }
 }

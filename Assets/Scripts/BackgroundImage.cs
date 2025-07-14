@@ -1,50 +1,20 @@
+using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-using System;
-using System.Collections;
 
 
-public class BackgroundImage : MonoBehaviour
-{
-    public string genaiApiUrl;
+public class BackgroundImage : MonoBehaviour {
     public RawImage backgroundImage;
-    private string[] bgPrompts = {
-        "An image of a planet in outer space",
-        "An image of a galaxy in outer space",
-        "An image of a supernova in outer space",
-        "An image of a black hole in outer space",
-        "An image of a wormhole in outer space"
-    };
-    private System.Random random = new System.Random();
-    private string bgPrompt;
 
     // load AI-generated background image
-    void Start()
-    {
-        StartCoroutine(LoadImage());
-    }
-
-    // loads AI-generated background image from API
-    IEnumerator LoadImage()
-    {
-        bgPrompt = bgPrompts[random.Next(bgPrompts.Length)];
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(
-            genaiApiUrl + "/ai_generated_image?text="
-            + $"{bgPrompt.Replace(" ", "%20")}");
-        request.SetRequestHeader("ngrok-skip-browser-warning", "");
-        yield return request.SendWebRequest();
-
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            Debug.Log("AI-generated image for background loaded successfully");
+    void Start() {
+        if (File.Exists(ImageLoader.GameBgPath)) {
             backgroundImage.color = Color.white;
-            Texture2D texture = DownloadHandlerTexture.GetContent(request);
+            Texture2D texture = ImageLoader.LoadImageFromFile(
+                ImageLoader.GameBgPath);
             backgroundImage.texture = texture;
-        }
-        else
-        {
-            Debug.LogError("AI-generated image load failed: " + request.error);
         }
     }
 }

@@ -2,10 +2,7 @@
 
 A remake of the classic Space Invaders game, featuring adaptive difficulty and AI-generated (at run-time) backgrounds and sprites.
 
-For sample gameplay, check out the videos in the `SampleGameplay` folder. These videos have also been uploaded to YouTube (links below).
-- https://youtube.com/shorts/kb8ZC2urlgI
-- https://youtube.com/shorts/DZlI4jm5nCw
-- https://youtube.com/shorts/4KjdOtoCfdk
+For sample gameplay, check out the `SampleGameplay.mp4` video. This video also been uploaded to YouTube: https://youtu.be/mNgc5PSSCIU.
 
 How to run: 
 1. In Google Colab, upload the `nsi_genai_api.ipynb` notebook from the `API` directory.
@@ -17,4 +14,5 @@ How to run:
 7. To confirm the API is responsive, open up a web browser and go to `<public ngrok URL>/ai_generated_image?text=a%20galaxy%20in%20outer%20space`. There will be a page from ngrok that pops up, asking you to confirm that you want to visit the site. Click the "Visit Site" button to confirm. This only needs to be done the first time a request is sent from the browser to the API. The game code sends requests with a specific header to bypass this page. An AI-generated image of a galaxy should be returned and visible in the browser.
 8. Create a project in Unity, and upload the contents of the `Assets` directory here to the `Assets` directory in Unity.
 9. In Unity, find the Invaders and BackgroundRawImage GameObjects in the Hierarchy. For both GameObjects, there will be an argument in the Inspector for their respective scripts, called Genai Api Url. Set the value of that argument to the public ngrok URL. This is how the game knows where to send web requests to get AI-generated images for the background and invader sprites.
-10. Press the play button at the top of the Unity window, and enjoy playing the game!
+10. In Unity, go to `File > Build Settings` and from the Project tab, drag and drop all the `.unity` scene files into the Scenes In Build list, if they are not already there. This ensures that all scenes are included in the build and available to the game while it is running.
+11. Press the play button at the top of the Unity window, and enjoy playing the game!
