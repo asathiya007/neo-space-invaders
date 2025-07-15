@@ -439,4 +439,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backgroundImage: {fileID: 1829587943}
-  genaiApiUrl: https://b3ef8f90e0f6.ngrok-free.app
+  genaiApiUrl: https://5d20b7d3df1c.ngrok-free.app

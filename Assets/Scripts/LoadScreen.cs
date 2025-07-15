@@ -19,12 +19,13 @@ public class LoadScreen : MonoBehaviour {
     private string bgPrompt;
     private string[] invaderPrompts = {
         "An animated alien head icon",
-        "An animated flying saucer icon"        
+        "An animated alien head icon",
+        "An animated flying saucer icon"
     };
     private string invaderPrompt;
     private System.Random random = new System.Random();
     private bool bgImgReqCompleted = false;
-    private bool invImgReqCompleted = false;
+    private bool[] invImgReqCompleted = {false, false, false};
 
     // gets AI-generated background image from API
     IEnumerator GetBackgroundImage() {
@@ -51,27 +52,38 @@ public class LoadScreen : MonoBehaviour {
     }
 
     // get AI-generated image from API, for invaders
-    IEnumerator GetInvaderImage() {
-        invaderPrompt = invaderPrompts[random.Next(invaderPrompts.Length)];
+    IEnumerator GetInvaderImage(int invaderNum) {
+        // get save path and prompt to generate image
+        string savePath;
+        if (invaderNum == 1) {
+            savePath = ImageLoader.InvaderPath1;
+        } else if (invaderNum == 2) {
+            savePath = ImageLoader.InvaderPath2;
+        } else {
+            savePath = ImageLoader.InvaderPath3;
+        } 
+        string invaderPrompt = invaderPrompts[invaderNum - 1];
+
+        // make web request, process result
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(
             genaiApiUrl + "/ai_generated_image?text="
             + $"{invaderPrompt.Replace(" ", "%20")}&crop=circle");
         request.SetRequestHeader("ngrok-skip-browser-warning", "");
         yield return request.SendWebRequest();
-
         if (request.result == UnityWebRequest.Result.Success)
         {
             Debug.Log(
-                "Request for AI-generated invader image succeeded");            
-            this.SaveImg(request, ImageLoader.InvaderPath);
-            invImgReqCompleted = true;
+                $"Request for AI-generated invader image {invaderNum} "
+                + "succeeded");            
+            this.SaveImg(request, savePath);
+            invImgReqCompleted[invaderNum - 1] = true;
         }
         else
         {
             Debug.LogError(
-                "Request for AI-generated invader image failed: "
-                + request.error);
-            invImgReqCompleted = true;
+                $"Request for AI-generated invader image {invaderNum} "
+                + $"failed: {request.error}");
+            invImgReqCompleted[invaderNum - 1] = true;
         }
     }
 
@@ -86,8 +98,10 @@ public class LoadScreen : MonoBehaviour {
         // get AI-generated background image
         StartCoroutine(GetBackgroundImage());
 
-        // get AI-generated invader image
-        StartCoroutine(GetInvaderImage());
+        // get AI-generated invader images
+        StartCoroutine(GetInvaderImage(1));
+        StartCoroutine(GetInvaderImage(2));
+        StartCoroutine(GetInvaderImage(3));
 
         // start game after AI-generated images have been loaded
         InvokeRepeating("StartGame", 1.0f, 1.0f);
@@ -95,8 +109,12 @@ public class LoadScreen : MonoBehaviour {
 
     // function to check if web requests have completed
     private void StartGame() {
-        if (this.bgImgReqCompleted && this.invImgReqCompleted)
-        {
+        bool requestsCompleted = this.bgImgReqCompleted;
+        for (int i = 0; i < this.invImgReqCompleted.Length; i++) {
+            requestsCompleted = requestsCompleted
+                && this.invImgReqCompleted[i];
+        }
+        if (requestsCompleted) {
             SceneLoader.LoadGameScene();
         }
     }

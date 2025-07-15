@@ -10,8 +10,12 @@ public static class ImageLoader {
     public const string WinScreenPath = "./Assets/Images/WinScreen.png";
     public const string GameBgPath =
         "./Assets/Images/GenAI_Background.png";
-    public const string InvaderPath =
-        "./Assets/Images/GenAI_Invader.png";
+    public const string InvaderPath1 =
+        "./Assets/Images/GenAI_Invader1.png";
+    public const string InvaderPath2 =
+        "./Assets/Images/GenAI_Invader2.png";
+    public const string InvaderPath3 =
+        "./Assets/Images/GenAI_Invader3.png";
 
     // function to get randomly selected filepath for game over screen
     public static string GetRandomGameOverScreenPath() {

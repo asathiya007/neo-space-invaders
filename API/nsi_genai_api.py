@@ -33,9 +33,10 @@ def circle_crop(img):
     return new_img
 
 
-# set up pipeline for Stable Diffusion
+# set up pipeline for Stable Diffusion (using fp16 for faster inference)
 pipeline = StableDiffusionPipeline.from_pretrained(
-    'stabilityai/stable-diffusion-2')
+    'stabilityai/stable-diffusion-2',
+    revision='fp16', torch_dtype=torch.float16)
 pipeline = pipeline.to(
     torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
 

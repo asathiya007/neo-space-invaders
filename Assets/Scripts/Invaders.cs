@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -56,33 +57,68 @@ public class Invaders : MonoBehaviour {
         }
     }
 
+    private Sprite getInvaderSprite(string filePath) {
+        Texture2D texture = ImageLoader.LoadImageFromFile(filePath);
+        Sprite sprite = Sprite.Create(
+            texture,
+            new Rect(0, 0, texture.width, texture.height),
+            new Vector2(0.5f, 0.5f), (float) texture.width / (float) 1.7f 
+        );
+        return sprite;
+    }
+
     // invaders launch missiles, AI-generated images loaded for invaders
     private void Start() {
-        if (File.Exists(ImageLoader.InvaderPath)) {
-            Texture2D texture = ImageLoader.LoadImageFromFile(
-            ImageLoader.InvaderPath);
-            Sprite newSprite = Sprite.Create(
-                texture,
-                new Rect(0, 0, texture.width, texture.height),
-                new Vector2(0.5f, 0.5f), (float) texture.width / (float) 1.7f 
-            );
-            Sprite[] genAISprites = {newSprite};
+        if (File.Exists(ImageLoader.InvaderPath1)
+                && File.Exists(ImageLoader.InvaderPath2)
+                && File.Exists(ImageLoader.InvaderPath3)) {
+            // load invader sprite 1
+            Sprite invaderSprite1 = this.getInvaderSprite(
+                ImageLoader.InvaderPath1);
+            Sprite[] animationSprites1 = {invaderSprite1};
+
+            // load invader sprite 2
+            Sprite invaderSprite2 = this.getInvaderSprite(
+                ImageLoader.InvaderPath2);
+            Sprite[] animationSprites2 = {invaderSprite2};
+
+            // load invader sprite 3
+            Sprite invaderSprite3 = this.getInvaderSprite(
+                ImageLoader.InvaderPath3);
+            Sprite[] animationSprites3 = {invaderSprite3};
+
+            // apply sprites to game objects
             GameObject gameObj;
-            foreach (Invader invader in this.invaders) {
-                invader.animationSprites = genAISprites;
-                invader.spriteRenderer.sprite = newSprite;
+            for (int row = 0; row < this.rows; row++) {
+                for (int col = 0; col < this.columns; col++) {
+                    Invader invader = this.invaders[
+                        (row * this.columns) + col];
+                    
+                    // apply different sprites to game objects based on the
+                    // row
+                    if (row == 0) {
+                        invader.animationSprites = animationSprites1;
+                        invader.spriteRenderer.sprite = invaderSprite1;
+                    } else if (row == 1 || row == 2) {
+                        invader.animationSprites = animationSprites2;
+                        invader.spriteRenderer.sprite = invaderSprite2;
+                    } else {
+                        invader.animationSprites = animationSprites3;
+                        invader.spriteRenderer.sprite = invaderSprite3;
+                    }
 
-                // remove box collider if it exists
-                gameObj = invader.gameObject;
-                BoxCollider2D boxCollider = gameObj.GetComponent<BoxCollider2D>();
-                if (boxCollider != null) {
-                    Destroy(boxCollider);
+                    // remove box collider if it exists
+                    gameObj = invader.gameObject;
+                    BoxCollider2D boxCollider = gameObj.GetComponent<BoxCollider2D>();
+                    if (boxCollider != null) {
+                        Destroy(boxCollider);
+                    }
+
+                    // add circle collider, adjust so it covers sprite fully
+                    CircleCollider2D circleCollider = gameObj.AddComponent<CircleCollider2D>();
+                    Vector2 spriteSize = invader.spriteRenderer.bounds.size;
+                    circleCollider.radius = Mathf.Max(spriteSize.x, spriteSize.y) * 0.5f;
                 }
-
-                // add circle collider, adjust so it covers sprite fully
-                CircleCollider2D circleCollider = gameObj.AddComponent<CircleCollider2D>();
-                Vector2 spriteSize = invader.spriteRenderer.bounds.size;
-                circleCollider.radius = Mathf.Max(spriteSize.x, spriteSize.y) * 0.5f;
             }
         }
 
@@ -140,7 +176,19 @@ public class Invaders : MonoBehaviour {
     // probability of an invader shooting a missle changes based on
     // player performance and game progress (adaptive difficulty)
     private void MissileAttack() {
-        foreach (Transform invader in this.transform) {
+        // determine order in which invaders are evaluated (use the reverse
+        // order roughly half the time)
+        List<int> invaderOrder = new List<int>();
+        for (int i = 0; i < this.transform.childCount; i++)  {
+            invaderOrder.Add(i);
+        }
+        if (UnityEngine.Random.value < 0.5) {
+            invaderOrder.Reverse();
+        }
+
+        // fire missile
+        foreach (int invaderNum in invaderOrder) {
+            Transform invader = this.transform.GetChild(invaderNum);
             if (!invader.gameObject.activeInHierarchy) {
                 continue;
             }
