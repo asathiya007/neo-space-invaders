@@ -2,7 +2,7 @@
 
 A remake of the classic Space Invaders game, featuring adaptive difficulty and AI-generated (at run-time) backgrounds and sprites.
 
-For sample gameplay, see this video: https://youtu.be/lBU9Nza8K_o.
+For sample gameplay, see this video: https://youtu.be/FHDAypzr2Xc.
 
 How to run: 
 1. In Google Colab, upload the `nsi_genai_api.ipynb` notebook from the `API` directory.
