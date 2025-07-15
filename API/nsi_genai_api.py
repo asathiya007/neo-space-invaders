@@ -22,7 +22,8 @@ def circle_crop(img):
     radius = min(width, height) // 2
     center = (width // 2, height // 2)
     draw.ellipse(
-        (center[0] - radius, center[1] - radius, center[0] + radius, center[1] + radius),
+        (center[0] - radius, center[1] - radius, center[0] + radius,
+         center[1] + radius),
         fill=255
     )
 
